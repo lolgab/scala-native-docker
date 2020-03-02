@@ -7,6 +7,8 @@ jobs:
     steps:
       - setup_remote_docker
       - checkout
+      - docker/build:
+          image: lolgab/scala-native-docker
       - docker/push:
           image: lolgab/scala-native-docker
 workflows:
