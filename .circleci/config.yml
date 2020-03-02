@@ -1,0 +1,18 @@
+version: 2.1
+orbs:
+  docker: circleci/docker@0.6.1
+jobs:
+  push_docker:
+    executor: docker/docker
+    steps:
+      - checkout
+      - docker/push:
+          image: lolgab/scala-native-docker
+workflows:
+  build:
+    jobs:
+      - push_docker:
+          filters:
+            branches:
+              only:
+                - master
