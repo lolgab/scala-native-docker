@@ -5,6 +5,7 @@ jobs:
   push_docker:
     executor: docker/docker
     steps:
+      - setup_remote_docker
       - checkout
       - docker/push:
           image: lolgab/scala-native-docker
