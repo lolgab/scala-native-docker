@@ -8,6 +8,7 @@ ENV SCALANATIVE_VERSION ${SCALANATIVE_VERSION:-0.4.0-M2}
 ARG SBT_VERSION
 ENV SBT_VERSION ${SBT_VERSION:-1.4.0}
 
+WORKDIR /workdir
 RUN apk --no-cache add clang bash openjdk8 libc-dev build-base
 RUN wget -q -O - "https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.tgz" | gunzip | tar -x -C /usr/local
 ENV PATH=/usr/local/sbt/bin:$PATH
