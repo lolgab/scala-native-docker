@@ -1,16 +1,26 @@
-FROM alpine:3.12
+ARG UBUNTU_VERSION=focal
+FROM ubuntu:$UBUNTU_VERSION
 
 # Env variables
 ARG SCALA_VERSION
-ENV SCALA_VERSION ${SCALA_VERSION:-2.11.12}
+ENV SCALA_VERSION ${SCALA_VERSION:-2.13.8}
 ARG SCALANATIVE_VERSION
-ENV SCALANATIVE_VERSION ${SCALANATIVE_VERSION:-0.4.0-M2}
+ENV SCALANATIVE_VERSION ${SCALANATIVE_VERSION:-0.4.4}
 ARG SBT_VERSION
-ENV SBT_VERSION ${SBT_VERSION:-1.4.0}
+ENV SBT_VERSION ${SBT_VERSION:-1.6.2}
 
 WORKDIR /workdir
-RUN apk --no-cache add clang bash openjdk8 libc-dev build-base
-RUN wget -q -O - "https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.tgz" | gunzip | tar -x -C /usr/local
+RUN apt-get update && \
+    apt-get install -y curl clang openjdk-8-jdk libuv1-dev libssl-dev libcurl4-openssl-dev && \
+    curl --output /usr/share/keyrings/nginx-keyring.gpg \
+         https://unit.nginx.org/keys/nginx-keyring.gpg && \
+    # Install NGINX Unit
+    echo "deb [signed-by=/usr/share/keyrings/nginx-keyring.gpg] https://packages.nginx.org/unit/ubuntu/ $UBUNTU_VERSION unit" >> /etc/apt/sources.list.d/unit.list && \
+    echo "deb-src [signed-by=/usr/share/keyrings/nginx-keyring.gpg] https://packages.nginx.org/unit/ubuntu/ $UBUNTU_VERSION unit" >> /etc/apt/sources.list.d/unit.list && \
+    apt-get update && \
+    apt-get install -y unit-dev
+# Install Sbt
+RUN curl -sL "https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.tgz" | gunzip | tar -x -C /usr/local
 ENV PATH=/usr/local/sbt/bin:$PATH
 # Prepare sbt (warm cache)
 RUN \

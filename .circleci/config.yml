@@ -9,13 +9,8 @@ jobs:
       - checkout
       - docker/build:
           image: lolgab/scala-native-docker
-      - docker/build:
-          image: lolgab/actionloop-scala-native
-          path: openwhisk
       - docker/push:
           image: lolgab/scala-native-docker
-      - docker/push:
-          image: lolgab/actionloop-scala-native
 workflows:
   build:
     jobs:
